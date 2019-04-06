@@ -25,6 +25,7 @@
 
   <!-- Custom styles for this template -->
   <link href="css/new-age.min.css" rel="stylesheet">
+  
 
 </head>
 
@@ -103,7 +104,7 @@
                   </div>
                 </div>
               </div>    
-      <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase.js"></script>
+     <!-- <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase.js"></script>
       <script>
         // Initialize Firebase
         var config = {
@@ -115,7 +116,20 @@
           messagingSenderId: "281923208529"
         };
         firebase.initializeApp(config);
-      </script>
+      </script> -->
+      <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyA3TFDsjaJEaA9QVyn1LyDPdbzkJ6kDzyY",
+    authDomain: "blood-1ea0c.firebaseapp.com",
+    databaseURL: "https://blood-1ea0c.firebaseio.com",
+    projectId: "blood-1ea0c",
+    storageBucket: "blood-1ea0c.appspot.com",
+    messagingSenderId: "961140727538"
+  };
+  firebase.initializeApp(config);
+</script>
       <script src="index.js"></script>
     
           </div>
@@ -123,32 +137,43 @@
         <div class="overlay"></div>
       </section>
 
+      <!-- Class form -->
+
       <header class="masthead" id="card_form">
-            <div class="container h-100">
+            <div class="container h-100" style="ba">
               <div class="row h-100">
                 <div class="col-lg-7 my-auto">
-                  <div class="header-content mx-auto">
-                        <div id="user_div" class="loggedin-div"> 
-
-                              </div>
-                    <h1 class="mb-5">we are a group of students, eager to help with this great initiative to donate blood to save lives </h1>
-                    <a href="#download" class="btn btn-outline btn-xl js-scroll-trigger">Download now for Free!</a>
+                  <div class="col-lg-6" >
+                        <div id="user_div" class="card-title"><h5 style="color: black"></h5></div>
+                        <div class="form-group"> <h5 style="color: black">Select Units of Blood</h5></div>
+                        <div class="form-group"><input type="number" id="unitis" class="form-control" placeholder="Insert Units"></input></div>
+                        <div class="form-group"> <h5 style="color: black">Type Blood</h5></div>
+                        <div class="form-group">                                   
+                          <select class="form-control" id="type_blood" required>
+                            <option>O+</option>
+                            <option>O-</option>
+                            <option>A+</option>
+                            <option>A-</option>
+                            <option>B+</option>
+                            <option>B-</option>
+                            <option>AB-</option>
+                            <option>AB+</option>
+                        </select></div>
+                    <a class="btn btn-lg btn-primary btn-block text-uppercase">Request!</a>
                   </div>
                 </div>
                 <div class="col-lg-5 my-auto">
-                  <div class="device-container">
-                    <div class="device-mockup iphone6_plus portrait white">
-                      <div class="device">
-                        <div class="screen">
-                          <!-- Demo image for screen mockup, you can put an image here, some HTML, an animation, video, or anything else! -->
-                          <img src="img/demo-screen-1.jpg" class="img-fluid" alt="">
-                        </div>
-                        <div class="button">
-                          <!-- You can hook the "home button" to some JavaScript events or just remove it -->
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                    <table class="table table-bordered text-center">
+                      <thead class="thead-light">
+                        <tr>
+                          <th>Blood Type</th>
+                          <th>Units</th>
+                          <th></th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody id="loadtask"></tbody>
+                    </table>
                 </div>
               </div>
             </div>

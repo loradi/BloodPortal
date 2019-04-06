@@ -46,7 +46,8 @@ firebase.auth().onAuthStateChanged(function(user) {
     });
   
   }
-  function getList(){
+  function getID(id){
+    return document.getElementById(id).value;
     
   }
   
