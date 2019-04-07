@@ -1,3 +1,4 @@
+var uid;
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
       // User is signed in.
@@ -14,7 +15,8 @@ firebase.auth().onAuthStateChanged(function(user) {
       if(user != null){
   
         var email_id = user.email;
-        document.getElementById("user_para").innerHTML = "Welcome User : " + email_id;
+        uid = user.uid;
+        document.getElementById("user_para").innerHTML = "Welcome User : " + email_id+ uid;
   
       }
   
@@ -48,8 +50,26 @@ firebase.auth().onAuthStateChanged(function(user) {
   }
   function getID(id){
     return document.getElementById(id).value;
-    
-  }
+    }
+    function arrayJSON1(unidades, tipo_sangre){
+      var arreglo = {
+        unidades: unidades,
+        tipo_sangre: tipo_sangre
+      };
+      return arreglo;
+
+    }
+    function insertRequest(){
+      var unidades = getID("unitis");
+      var tipo_sangre = getID("type_blood");
+      if (unidades == 0 ){
+        alert("You need to select at least one unit to send the request");
+      }else{
+        var arrayData = arrayJSON1(unidades,tipo_sangre);
+        //var request_unities = firebase.database().ref("requestes");
+        console.log(arrayData.unidades+ uid);
+      }
+    }
   
   function logout(){
     firebase.auth().signOut();
