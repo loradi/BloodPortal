@@ -90,13 +90,6 @@
                             <label class="custom-control-label" for="customCheck1">Remember password</label>
                           </div>
                           <a href="#download" class="btn btn-lg btn-primary btn-block text-uppercase"onclick="login()">Login to Account</a> 
-
-                          <div class="form-label-group" align="center">
-                                <label>OR</label>
-                              </div>
-                              <div class="form-label-group" align="center">
-                                    <a href="register.html" align="center"> Register</a>
-                                  </div>
                           <hr class="my-4">
                         </form>
                       </div>
@@ -104,7 +97,7 @@
                   </div>
                 </div>
               </div>    
-     <!-- <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase.js"></script>
+     <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase.js"></script>
       <script>
         // Initialize Firebase
         var config = {
@@ -116,8 +109,8 @@
           messagingSenderId: "281923208529"
         };
         firebase.initializeApp(config);
-      </script> -->
-      <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase.js"></script>
+      </script> 
+<!--      <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase.js"></script>
 <script>
   // Initialize Firebase
   var config = {
@@ -129,7 +122,7 @@
     messagingSenderId: "961140727538"
   };
   firebase.initializeApp(config);
-</script>
+</script>-->
       <script src="index.js"></script>
     
           </div>
@@ -140,10 +133,10 @@
       <!-- Class form -->
 
       <header class="masthead" id="card_form">
-            <div class="container h-100" style="ba">
+            <div class="container h-100" >
               <div class="row h-100">
                 <div class="col-lg-7 my-auto">
-                  <div class="col-lg-6" >
+                  <div class="col-lg-6" id="user_div" >
                         <div id="user_div" class="card-title"><h5 style="color: black"></h5></div>
                         <div class="form-group"> <h5 style="color: black">Select Units of Blood</h5></div>
                         <div class="form-group"><input type="number" id="unitis" class="form-control" placeholder="Insert Units"></input></div>
@@ -161,6 +154,27 @@
                         </select></div>
                     <a class="btn btn-lg btn-primary btn-block text-uppercase" onclick="insertRequest()">Request!</a>
                   </div>
+
+
+                  <div class="col-lg-6" id="user_div2">
+                      <div id="user_div2" class="card-title"><h3 style="color: black">Final the Registration</h3></div>
+                      <div class="form-group"> <h5 style="color: black">Address</h5> <p id="alert_address" style="color: rgb(247, 102, 6)"></p> </div>
+                      <div class="form-group"><input type="text" id="address_hospital" class="form-control" placeholder="Insert Hospital Address" required="true"></input></div>
+                      <div class="form-group"> <h5 style="color: black">Name Hospital</h5><p id="alert_nameHospital" style="color: brown"></p></div>
+                      <div class="form-group"><input type="text" id="name_hospital" class="form-control" placeholder="Insert Name Hospital" required></input></div>
+                      <div class="form-group"> <h5 style="color: black">Postal Code</h5><p id="alert_postalcode" style="color: brown"></p></div>
+                      <div class="form-group"><input type="text" id="postalcode_hospital" class="form-control" pattern="[A-Za-z][0-9][A-Za-z] [0-9][A-Za-z][0-9]" placeholder="Insert Hospital Postal Code" required></input></div>
+                      <div class="form-group"> <h5 style="color: black">Contact Person </h5><p id="alert_contact" style="color: brown"></p></div>
+                      <div class="form-group"><input type="text" id="contact_hospital" class="form-control" placeholder="Insert Hospital Person Contact" required></input></div>
+                      <div class="form-group"> <h5 style="color: black">Person Name</h5><p id="alert_personname" style="color: brown"></p></div>
+                      <div class="form-group"><input type="text" id="personname_hospital" class="form-control" placeholder="Insert Hospital Person Name" required></input></div>
+                      <div class="form-group"> <h5 style="color: black">Units</h5><p id="alert_units" style="color: brown"></p></div>
+                      <div class="form-group"><input type="number" id="units_hospital" class="form-control" placeholder="Insert Hospital Units" required></input></div>                                 
+                  <a class="btn btn-lg btn-primary btn-block text-uppercase" onclick="insertHospital()">Submit!</a>
+                </div>
+
+
+
                 </div>
                 <div class="col-lg-5 my-auto">
                     <table class="table table-bordered text-center">
@@ -178,13 +192,6 @@
               </div>
             </div>
           </header>
-
-
-
-
-
-
-
   <footer>
     <div class="container">
       <p>&copy; Blood Donation 2019. All Rights Reserved.</p>
