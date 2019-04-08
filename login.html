@@ -157,7 +157,7 @@
 
 
                   <div class="col-lg-6" id="user_div2">
-                      <div id="user_div2" class="card-title"><h3 style="color: black">Final the Registration</h3></div>
+                      <div id="user_div2" class="card-title"><h3 style="color: black">Registration</h3></div>
                       <div class="form-group"> <h5 style="color: black">Address</h5> <p id="alert_address" style="color: rgb(247, 102, 6)"></p> </div>
                       <div class="form-group"><input type="text" id="address_hospital" class="form-control" placeholder="Insert Hospital Address" required="true"></input></div>
                       <div class="form-group"> <h5 style="color: black">Name Hospital</h5><p id="alert_nameHospital" style="color: brown"></p></div>
@@ -165,11 +165,18 @@
                       <div class="form-group"> <h5 style="color: black">Postal Code</h5><p id="alert_postalcode" style="color: brown"></p></div>
                       <div class="form-group"><input type="text" id="postalcode_hospital" class="form-control" pattern="[A-Za-z][0-9][A-Za-z] [0-9][A-Za-z][0-9]" placeholder="Insert Hospital Postal Code" required></input></div>
                       <div class="form-group"> <h5 style="color: black">Contact Person </h5><p id="alert_contact" style="color: brown"></p></div>
-                      <div class="form-group"><input type="text" id="contact_hospital" class="form-control" placeholder="Insert Hospital Person Contact" required></input></div>
+                      <div class="form-group"><input type="number" id="contact_hospital" class="form-control" placeholder="Insert Hospital Person Contact" required></input></div>
                       <div class="form-group"> <h5 style="color: black">Person Name</h5><p id="alert_personname" style="color: brown"></p></div>
                       <div class="form-group"><input type="text" id="personname_hospital" class="form-control" placeholder="Insert Hospital Person Name" required></input></div>
-                      <div class="form-group"> <h5 style="color: black">Units</h5><p id="alert_units" style="color: brown"></p></div>
-                      <div class="form-group"><input type="number" id="units_hospital" class="form-control" placeholder="Insert Hospital Units" required></input></div>                                 
+                      <div class="form-group"> <h5 style="color: black">Email</h5><p id="alert_email" style="color: brown"></p></div>
+                      <div class="form-group"><input type="email" id="contactEmail_hospital" class="form-control" placeholder="Insert Hospital Email Contact" required></input></div>
+                      <div class="form-group"> <h5 style="color: black">Its a Blood Bank ? </h5><p id="alert_units" style="color: brown"></p></div>
+                      <div class="form-group">                                    
+                        <select class="form-control" id="bloodBank_hospital" required>
+                          <option>Yes</option>
+                          <option>No</option>
+                        </select>
+                      </div>                               
                   <a class="btn btn-lg btn-primary btn-block text-uppercase" onclick="insertHospital()">Submit!</a>
                 </div>
 

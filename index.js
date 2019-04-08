@@ -1,28 +1,43 @@
 var uid;
-var bool = "2";
+var bool = "1";
+var bool_hospital = "2";
 var address_hospital;
 var name_hospital;
-var postalcode_hospital;
+var postalCode_hospital;
 var contact_hospital;
-var personname_hospital;
+var personName_hospital;
 var units_hospital;
+var contactEmail_hospital;
+var BloodBank_hospital;
+const db = firebase.firestore();
 
+
+
+validateHospital();
 //logica para mostrar los datos en pantalla 
 firebase.auth().onAuthStateChanged(function(user) {
+
     if (user) {
       // User is signed in.
-      if(bool == "1"){
-        console.log("entro al If");
+      console.log("ACA  SE REVISA EL BOOL"+bool_hospital);
+      if(bool_hospital == "1"){
+        //console.log("7");
       document.getElementById("user_div").style.display = "block";
+      //console.log("8");
       document.getElementById("user_div2").style.display = "none";
 
     }else{
       document.getElementById("user_div").style.display = "none";
+      //console.log("9");
       document.getElementById("user_div2").style.display = "block";
+      //console.log("10");
     }
       document.getElementById("card_form").style.display = "block";
+      //console.log("11");
       document.getElementById("show").style.display = "block";
+      //console.log("12");
       document.getElementById("login_div").style.display = "none";
+      //console.log("13");
       document.getElementById("hide").style.display = "none";
       
   
@@ -32,7 +47,7 @@ firebase.auth().onAuthStateChanged(function(user) {
   
         var email_id = user.email;
         uid = user.uid;
-        document.getElementById("user_para").innerHTML = "Welcome User : " + email_id+ uid;
+        document.getElementById("user_para").innerHTML = "Welcome User : " + email_id;
   
       }
   
@@ -106,47 +121,92 @@ function arrayHospital(uid, address_hospital,name_hospital,postalcode_hospital,c
         alert("You need to select at least one unit to send the request");
       }else{
         var arrayData = arrayJSON1(unidades,tipo_sangre);
-        var request_unities = firebase.database().ref("HOSPITAL_DB/");
-        request_unities.set(arrayData);
+
+        var request_unities = db.collection("HOSPITAL_DB/").add({arrayData});
+        //request_unities.set(arrayData);
         console.log(arrayData.unidades+ uid);
       }
     }
 
     // funcion para insertar un Hospital 
     function insertHospital(){
-      address_hospital = getID("address_hospital");
-      contact_hospital = getID("contact_hospital");
+
       name_hospital = getID("name_hospital");
-      personname_hospital = getID("personname_hospital");
-      postalcode_hospital = getID("postalcode_hospital");
-      units_hospital  = getID("units_hospital");
+      address_hospital = getID("address_hospital");
+      postalCode_hospital = getID("postalcode_hospital");
+      personName_hospital = getID("personname_hospital");
+      contactNumber_hospital = getID("contact_hospital");
+      contactEmail_hospital = getID("contactEmail_hospital");
+      bloodBank_hospital  = getID("bloodBank_hospital");
+      
 
-
-      if (address_hospital == "" ||  contact_hospital =="" || name_hospital == "" || personname_hospital == "" ||  postalcode_hospital =="" || units_hospital == ""){
+      if (address_hospital == "" ||  contact_hospital =="" || name_hospital == "" || personName_hospital == "" ||  postalCode_hospital =="" || contactEmail_hospital == "" || BloodBank_hospital==""){
         alert("Please fill all the inputs");
       }else{
-      console.log("ESTOS SON LOS DATOS "+ address_hospital.lenght+ contact_hospital);
+        //console.log(bloodBank_hospital.length);
+        if (bloodBank_hospital.length > 2){
+          
+          bloodBank_hospital = true;
+          console.log(bloodBank_hospital);
+        }else{
+          
+          bloodBank_hospital = false;
+          console.log(bloodBank_hospital);
+        }
+        var regex = /^[A-Z]\d[A-Z][ -]?\d[A-Z]\d$/;
+        var match = regex.exec(postalCode_hospital);
+        if(match){
+ 
+      //console.log("ESTOS SON LOS DATOS "+ address_hospital.lenght+ contact_hospital);
       var arrayData = arrayHospital(uid, address_hospital,name_hospital,postalcode_hospital,contact_hospital,personname_hospital, units_hospital);
-      var Hospital_insert = firebase.database().ref("HOSPITAL_DB/"+uid);
-      Hospital_insert.set(arrayData);
+      var Hospital_insert = db.collection("HOSPITAL_DB/").add({
+        uid: uid,
+        name: name_hospital,
+        address: address_hospital,
+        postalCode: postalCode_hospital,
+        personName: personName_hospital,
+        contactNumber: contactNumber_hospital,
+        contactEmail: contactEmail_hospital,
+        isBloodBank: bloodBank_hospital
+      });
+      //Hospital_insert.set(arrayData);
       alert("The Registration was successfull!!");
       cleanForm("address_hospital","");
       cleanForm("contact_hospital","");
       cleanForm("name_hospital","");
       cleanForm("personname_hospital","");
       cleanForm("postalcode_hospital","");
-      cleanForm("units_hospital","");
-
+      cleanForm("contactEmail_hospital","");
+    }else{
+      alert("the Postal Code doesnt have the right format ");
+    }
       }
     }
 // function to clean form 
     function cleanForm(id,clean){
       return document.getElementById(id).value = clean;
     }
+//Function to validate if the Hospital exist or not 
+    function validateHospital(){
+      //console.log("1");
+      db.collection('HOSPITAL_DB/').get().then((snapshot) =>{
+        snapshot.docs.forEach(doc => {
+          console.log("ESTOS SON LOS DATOS "+ doc.data().uid);
+          if(doc.data().uid == uid){
+            console.log("7");
+          document.getElementById("user_div").style.display = "block";
+          console.log("8");
+          document.getElementById("user_div2").style.display = "none";
+          }
+        });
+      });
+
+    }
 
   
     // esta es la funcion para desloguearse del sistema 
   function logout(){
     firebase.auth().signOut();
+    location.reload();
   }
   
