@@ -9,6 +9,7 @@ var personName_hospital;
 var units_hospital;
 var contactEmail_hospital;
 var BloodBank_hospital;
+var fechadesolicitud;
 const db = firebase.firestore();
 
 
@@ -117,15 +118,75 @@ function arrayHospital(uid, address_hospital,name_hospital,postalcode_hospital,c
     function insertRequest(){
       var unidades = getID("unitis");
       var tipo_sangre = getID("type_blood");
+      var date = new Date();
+
+      var month = date.getMonth() + 1;
+      var day = date.getDate();
+      var hour = date.getHours();
+      var min = date.getMinutes();
+      var sec = date.getSeconds();
+  
+      month = (month < 10 ? "0" : "") + month;
+      day = (day < 10 ? "0" : "") + day;
+      hour = (hour < 10 ? "0" : "") + hour;
+      min = (min < 10 ? "0" : "") + min;
+      sec = (sec < 10 ? "0" : "") + sec;
+  
+      var str = date.getFullYear() + "-" + month + "-" + day + " " +  hour + ":" + min + ":" + sec;
+      console.log("LOS DATOS "+ contactEmail_hospital+"/"+address_hospital+"/"+name_hospital+"/"+postalCode_hospital+"/"+personName_hospital+"/"+contactNumber_hospital+"/"+uid);
+  
+      //alert(str);
       if (unidades == 0 ){
         alert("You need to select at least one unit to send the request");
       }else{
-        var arrayData = arrayJSON1(unidades,tipo_sangre);
+        var date = new Date();
+        if(tipo_sangre == "A+"){
+          var blood = 1;
+        }
+        if(tipo_sangre == "A-"){
+          var blood = 2;
+        }
+        if(tipo_sangre== "B+"){
+          var blood = 3;
+        }
+        if(tipo_sangre == "B-"){
+          var blood = 4;
+        }
+        if(tipo_sangre == "O+"){
+          var blood = 5;
+        }
+        if(tipo_sangre == "0-"){
+          var blood = 6;
+        }
+        if(tipo_sangre == "AB+"){
+          var blood = 7;
+        }
+        if(tipo_sangre == "AB-"){
+          var blood = 8;
+        }
+        if(tipo_sangre == "RARE_TYPE"){
+          var blood = 9;
+        }
 
-        var request_unities = db.collection("HOSPITAL_DB/").add({arrayData});
+        var request_unities = db.collection("REQUEST_DB/").add({
+          orgName: name_hospital,
+          orgAddress: address_hospital,
+          orgPostalCode: postalCode_hospital,
+          personName: personName_hospital,
+          contactNumber: contactNumber_hospital,
+          contactEmail: contactEmail_hospital,
+          hospitalID: uid,
+          bloodGroup: blood,
+          units: unidades,
+          timestampCreated: str
+        });
         //request_unities.set(arrayData);
-        console.log(arrayData.unidades+ uid);
+        alert("The Request was successfull!!");
+        cleanForm("unitis","");
+        
+
       }
+         //location.reload();
     }
 
     // funcion para insertar un Hospital 
@@ -194,15 +255,81 @@ function arrayHospital(uid, address_hospital,name_hospital,postalcode_hospital,c
           console.log("ESTOS SON LOS DATOS "+ doc.data().uid);
           if(doc.data().uid == uid){
             console.log("7");
+            contactNumber_hospital = doc.data().contactEmail;
+            contactEmail_hospital = doc.data().contactNumber;
+            name_hospital = doc.data().name;
+            address_hospital = doc.data().address;
+            postalCode_hospital = doc.data().postalCode;
+            personName_hospital = doc.data().personName;
+            
           document.getElementById("user_div").style.display = "block";
           console.log("8");
           document.getElementById("user_div2").style.display = "none";
+          populateTable();
           }
         });
       });
 
     }
 
+//populate html 
+function innerHTML(id,result){
+  return document.getElementById(id).innerHTML += result;
+}
+
+//create tables 
+    function createTable(name_hospital,address_hospital,type_blood,units_hospital,timestampCreated){
+      return '<tr>'+
+        '<td>'+name_hospital+'</td>'+
+        '<td>'+address_hospital+'</td>'+
+        '<td>'+type_blood+'</td>'+
+        '<td>'+units_hospital+'</td>'+
+        '<td>'+timestampCreated+'</td>'+
+      '</tr>';
+    }
+//fill the table 
+    function populateTable(){
+      db.collection('REQUEST_DB/').get().then((snapshot) =>{
+        snapshot.docs.forEach(doc =>{
+          console.log("ESTOS SON LOS DATOS DE LA TABLA"+doc.data().bloodGroup);
+          if(doc.data().hospitalID == uid){
+            if(doc.data().bloodGroup == 1){
+              var blood = "A+";
+            }
+            if(doc.data().bloodGroup == 2){
+              var blood = "A-";
+            }
+            if(doc.data().bloodGroup == 3){
+              var blood = "B+";
+            }
+            if(doc.data().bloodGroup == 4){
+              var blood = "B-";
+            }
+            if(doc.data().bloodGroup == 5){
+              var blood = "O+";
+            }
+            if(doc.data().bloodGroup == 6){
+              var blood = "O-";
+            }
+            if(doc.data().bloodGroup == 7){
+              var blood = "AB+";
+            }
+            if(doc.data().bloodGroup == 8){
+              var blood = "AB-";
+            }
+            if(doc.data().bloodGroup == 9){
+              var blood = "RARE_TYPE";
+            }
+
+          var tablaHospital = createTable(doc.data().orgName,doc.data().orgAddress,blood,doc.data().units,doc.data().timestampCreated);
+          innerHTML("loadtask", tablaHospital);
+          }else{
+            console.log("No son compatibles los UID");
+          }
+
+        });
+      });
+    }
   
     // esta es la funcion para desloguearse del sistema 
   function logout(){
