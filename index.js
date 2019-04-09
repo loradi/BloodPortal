@@ -186,8 +186,8 @@ function arrayHospital(uid, address_hospital,name_hospital,postalcode_hospital,c
         
 
       }
-         //location.reload();
     }
+ 
 
     // funcion para insertar un Hospital 
     function insertHospital(){
