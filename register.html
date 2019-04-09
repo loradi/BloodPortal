@@ -1,162 +1,343 @@
-<!DOCTYPE html>
-<html lang="en">
+var uid;
+var bool = "1";
+var bool_hospital = "2";
+var address_hospital;
+var name_hospital;
+var postalCode_hospital;
+var contact_hospital;
+var personName_hospital;
+var units_hospital;
+var contactEmail_hospital;
+var BloodBank_hospital;
+var fechadesolicitud;
+const db = firebase.firestore();
 
-<head>
 
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
 
-  <title>Blood Donation</title>
+validateHospital();
+//logica para mostrar los datos en pantalla 
+firebase.auth().onAuthStateChanged(function(user) {
+  //validateHospital();
 
-  <!-- Bootstrap core CSS -->
-  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    if (user) {
+      // User is signed in.
+      console.log("ACA  SE REVISA EL BOOL"+bool_hospital);
+      if(bool_hospital == "1"){
+        //console.log("7");
+      document.getElementById("user_div").style.display = "block";
+      //console.log("8");
+      document.getElementById("user_div2").style.display = "none";
 
-  <!-- Custom fonts for this template -->
-  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="vendor/simple-line-icons/css/simple-line-icons.css">
-  <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
+    }else{
+      document.getElementById("user_div").style.display = "none";
+      //console.log("9");
+      document.getElementById("user_div2").style.display = "block";
+      //console.log("10");
+    }
+      document.getElementById("card_form").style.display = "block";
+      //console.log("11");
+      document.getElementById("show").style.display = "block";
+      //console.log("12");
+      document.getElementById("login_div").style.display = "none";
+      //console.log("13");
+      document.getElementById("hide").style.display = "none";
+      
+  
+      var user = firebase.auth().currentUser;
+  
+      if(user != null){
+  
+        var email_id = user.email;
+        uid = user.uid;
+        document.getElementById("user_para").innerHTML = "Welcome User : " + email_id;
+  
+      }
+  
+    } else {
+      // No user is signed in.
+      console.log("ESTE ES EL DATO "+ bool);
 
-  <!-- Plugin CSS -->
-  <link rel="stylesheet" href="device-mockups/device-mockups.min.css">
+      document.getElementById("card_form").style.display = "none";
+      document.getElementById("user_div").style.display = "none";
+      document.getElementById("user_div2").style.display = "none";
+      document.getElementById("show").style.display = "none";
+      document.getElementById("login_div").style.display = "block";
+      document.getElementById("hide").style.display = "block";
+      //document.getElementById("first_time").style.display = "block";
+  
+    }
+  });
+  
+// esta es la funcion para loguearse en firebase 
 
-  <!-- Custom styles for this template -->
-  <link href="css/new-age.min.css" rel="stylesheet">
+  function login(){
+  
+    var userEmail = document.getElementById("email_field").value;
+    var userPass = document.getElementById("password_field").value;
+  
+    firebase.auth().signInWithEmailAndPassword(userEmail, userPass).catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+  
+      window.alert("Error : " + errorMessage);
+  
+      // ...
+    });
+  
+  }
+  // esta es la funcion para traer el elemento por id 
+  function getID(id){
+    return document.getElementById(id).value;
+    }
 
-</head>
+// esta es la funcion para armar el arreglo del request 
+    function arrayJSON1(unidades, tipo_sangre){
+      var arreglo = {
+        unidades: unidades,
+        tipo_sangre: tipo_sangre
+      };
+      return arreglo;
 
-<body id="page-top">
+    }
+// esta es la funcion para armar el arreglo del request 
+function arrayHospital(uid, address_hospital,name_hospital,postalcode_hospital,contact_hospital,personname_hospital, units_hospital){
+  var arreglo = {
+    uid: uid,
+    address_hospital: address_hospital,
+    name_hospital: name_hospital,
+    postalcode_hospital: postalcode_hospital,
+    contact_hospital: contact_hospital,
+    personname_hospital: personname_hospital,
+    units_hospital: units_hospital
+  };
+  return arreglo;
 
-  <!-- Navigation -->
-  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
-    <div class="container">
-      <a class="navbar-brand js-scroll-trigger" href="#page-top">Blood donation Portal</a>
-      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-        Menu
-        <i class="fas fa-bars"></i>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="index.html">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="login.html">Sign In</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-  <section class="cta">
-        <div class="cta-content">
+}
 
-        <div class="container" id="login_div">
-                <div class="row">
-                  <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
-                    <div class="card card-signin my-5">
-                      <div class="card-body">
-                        <h5 class="card-title text-center">Sign In</h5>
-                        <form class="form-signin">
-                          <div class="form-label-group">
-                            <label for="inputEmail">Email address</label>
-                            <input type="email" id="email_field" class="form-control" placeholder="Email address" required autofocus>
-                          </div>
+    // esta es la funcion para insertar el requerimiento de unidades 
+    function insertRequest(){
+      var unidades = getID("unitis");
+      var tipo_sangre = getID("type_blood");
+      var date = new Date();
+
+      var month = date.getMonth() + 1;
+      var day = date.getDate();
+      var hour = date.getHours();
+      var min = date.getMinutes();
+      var sec = date.getSeconds();
+  
+      month = (month < 10 ? "0" : "") + month;
+      day = (day < 10 ? "0" : "") + day;
+      hour = (hour < 10 ? "0" : "") + hour;
+      min = (min < 10 ? "0" : "") + min;
+      sec = (sec < 10 ? "0" : "") + sec;
+  
+      var str = date.getFullYear() + "-" + month + "-" + day + " " +  hour + ":" + min + ":" + sec;
+      console.log("LOS DATOS "+ contactEmail_hospital+"/"+address_hospital+"/"+name_hospital+"/"+postalCode_hospital+"/"+personName_hospital+"/"+contactNumber_hospital+"/"+uid);
+  
+      //alert(str);
+      if (unidades == 0 ){
+        alert("You need to select at least one unit to send the request");
+      }else{
+        var date = new Date();
+        if(tipo_sangre == "A+"){
+          var blood = 1;
+        }
+        if(tipo_sangre == "A-"){
+          var blood = 2;
+        }
+        if(tipo_sangre== "B+"){
+          var blood = 3;
+        }
+        if(tipo_sangre == "B-"){
+          var blood = 4;
+        }
+        if(tipo_sangre == "O+"){
+          var blood = 5;
+        }
+        if(tipo_sangre == "0-"){
+          var blood = 6;
+        }
+        if(tipo_sangre == "AB+"){
+          var blood = 7;
+        }
+        if(tipo_sangre == "AB-"){
+          var blood = 8;
+        }
+        if(tipo_sangre == "RARE_TYPE"){
+          var blood = 9;
+        }
+
+        var request_unities = db.collection("REQUEST_DB/").add({
+          orgName: name_hospital,
+          orgAddress: address_hospital,
+          orgPostalCode: postalCode_hospital,
+          personName: personName_hospital,
+          contactNumber: contactNumber_hospital,
+          contactEmail: contactEmail_hospital,
+          hospitalID: uid,
+          bloodGroup: blood,
+          units: unidades,
+          timestampCreated: str
+        });
+        //request_unities.set(arrayData);
+        alert("The Request was successfull!!");
+        cleanForm("unitis","");
+        
+
+      }
+    }
+ 
+
+    // funcion para insertar un Hospital 
+    function insertHospital(){
+
+      name_hospital = getID("name_hospital");
+      address_hospital = getID("address_hospital");
+      postalCode_hospital = getID("postalcode_hospital");
+      personName_hospital = getID("personname_hospital");
+      contactNumber_hospital = getID("contact_hospital");
+      contactEmail_hospital = getID("contactEmail_hospital");
+      bloodBank_hospital  = getID("bloodBank_hospital");
+      
+
+      if (address_hospital == "" ||  contact_hospital =="" || name_hospital == "" || personName_hospital == "" ||  postalCode_hospital =="" || contactEmail_hospital == "" || BloodBank_hospital==""){
+        alert("Please fill all the inputs");
+      }else{
+        //console.log(bloodBank_hospital.length);
+        if (bloodBank_hospital.length > 2){
+          
+          bloodBank_hospital = true;
+          console.log(bloodBank_hospital);
+        }else{
+          
+          bloodBank_hospital = false;
+          console.log(bloodBank_hospital);
+        }
+        var regex = /^[A-Z]\d[A-Z][ -]?\d[A-Z]\d$/;
+        var match = regex.exec(postalCode_hospital);
+        if(match){
+ 
+      //console.log("ESTOS SON LOS DATOS "+ address_hospital.lenght+ contact_hospital);
+      var arrayData = arrayHospital(uid, address_hospital,name_hospital,postalcode_hospital,contact_hospital,personname_hospital, units_hospital);
+      var Hospital_insert = db.collection("HOSPITAL_DB/").add({
+        uid: uid,
+        name: name_hospital,
+        address: address_hospital,
+        postalCode: postalCode_hospital,
+        personName: personName_hospital,
+        contactNumber: contactNumber_hospital,
+        contactEmail: contactEmail_hospital,
+        isBloodBank: bloodBank_hospital
+      });
+      //Hospital_insert.set(arrayData);
+      alert("The Registration was successfull!!");
+      cleanForm("address_hospital","");
+      cleanForm("contact_hospital","");
+      cleanForm("name_hospital","");
+      cleanForm("personname_hospital","");
+      cleanForm("postalcode_hospital","");
+      cleanForm("contactEmail_hospital","");
+    }else{
+      alert("the Postal Code doesnt have the right format ");
+    }
+      }
+    }
+// function to clean form 
+    function cleanForm(id,clean){
+      return document.getElementById(id).value = clean;
+    }
+//Function to validate if the Hospital exist or not 
+    function validateHospital(){
+      //console.log("1");
+      var count = 0;
+      db.collection('HOSPITAL_DB/').get().then((snapshot) =>{
+        snapshot.docs.forEach(doc => {
+          count++;
+          console.log("ESTOS SON LOS DATOS "+ doc.data().uid+"_____"+count);
+          if(doc.data().uid == uid){
+            console.log("7");
+            contactNumber_hospital = doc.data().contactEmail;
+            contactEmail_hospital = doc.data().contactNumber;
+            name_hospital = doc.data().name;
+            address_hospital = doc.data().address;
+            postalCode_hospital = doc.data().postalCode;
+            personName_hospital = doc.data().personName;
             
-                          <div class="form-label-group">
-                            <label for="inputPassword">Password</label>
-                            <input type="password" id="password_field" class="form-control" placeholder="Password" required>
-                          </div>
-                          <div class="form-label-group">
-                                <label for="inputName">Name</label>
-                                <input type="text" id="name_field" class="form-control" placeholder="Password" required>
-                              </div>
-                              <div class="form-label-group">
-                                    <label for="inputBlood">Blood Type</label>
-                                    <select class="form-control" id="blood_field" required>
-                                            <option>O+</option>
-                                            <option>O-</option>
-                                            <option>A+</option>
-                                            <option>A-</option>
-                                            <option>B+</option>
-                                            <option>B-</option>
-                                            <option>AB-</option>
-                                            <option>AB+</option>
-                                          </select>
-                                        </div>
-            
-                          <div class="custom-control custom-checkbox mb-3">
-                            <input type="checkbox" class="custom-control-input" id="customCheck1">
-                            <label class="custom-control-label" for="customCheck1">Remember password</label>
-                          </div>
-                          <a href="login.html" class="btn btn-lg btn-primary btn-block text-uppercase"onclick="login()">Register</a> 
+          document.getElementById("user_div").style.display = "block";
+          console.log("8");
+          document.getElementById("user_div2").style.display = "none";
+          populateTable();
+          }
+        });
+      });
 
-                          <div class="form-label-group" align="center">
-                                <label>OR</label>
-                              </div>
-                              <div class="form-label-group" align="center">
-                                    <a href="login.html" align="center"> Sign In</a>
-                                  </div>
-                          <hr class="my-4">
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+    }
 
-    
-    
-    
-      <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase.js"></script>
-      <script>
-        // Initialize Firebase
-        var config = {
-          apiKey: "AIzaSyDIUZbT5eMkygxieLFKR1RUmCUhLKGEEto",
-          authDomain: "donateblood-60099.firebaseapp.com",
-          databaseURL: "https://donateblood-60099.firebaseio.com",
-          projectId: "donateblood-60099",
-          storageBucket: "donateblood-60099.appspot.com",
-          messagingSenderId: "281923208529"
-        };
-        firebase.initializeApp(config);
-      </script>
-      <script src="index.js"></script>
-    
-          </div>
-        </div>
-        <div class="overlay"></div>
-      </section>
+//populate html 
+function innerHTML(id,result){
+  return document.getElementById(id).innerHTML += result;
+}
 
-  <footer>
-    <div class="container">
-      <p>&copy; Blood Donation 2019. All Rights Reserved.</p>
-      <ul class="list-inline">
-        <li class="list-inline-item">
-          <a href="#">Privacy</a>
-        </li>
-        <li class="list-inline-item">
-          <a href="#">Terms</a>
-        </li>
-        <li class="list-inline-item">
-          <a href="#">FAQ</a>
-        </li>
-      </ul>
-    </div>
-  </footer>
+//create tables 
+    function createTable(name_hospital,address_hospital,type_blood,units_hospital,timestampCreated){
+      return '<tr>'+
+        '<td>'+name_hospital+'</td>'+
+        '<td>'+address_hospital+'</td>'+
+        '<td>'+type_blood+'</td>'+
+        '<td>'+units_hospital+'</td>'+
+        '<td>'+timestampCreated+'</td>'+
+      '</tr>';
+    }
+//fill the table 
+    function populateTable(){
+      db.collection('REQUEST_DB/').get().then((snapshot) =>{
+        snapshot.docs.forEach(doc =>{
+          console.log("ESTOS SON LOS DATOS DE LA TABLA"+doc.length);
+          if(doc.data().hospitalID == uid){
+            if(doc.data().bloodGroup == 1){
+              var blood = "A+";
+            }
+            if(doc.data().bloodGroup == 2){
+              var blood = "A-";
+            }
+            if(doc.data().bloodGroup == 3){
+              var blood = "B+";
+            }
+            if(doc.data().bloodGroup == 4){
+              var blood = "B-";
+            }
+            if(doc.data().bloodGroup == 5){
+              var blood = "O+";
+            }
+            if(doc.data().bloodGroup == 6){
+              var blood = "O-";
+            }
+            if(doc.data().bloodGroup == 7){
+              var blood = "AB+";
+            }
+            if(doc.data().bloodGroup == 8){
+              var blood = "AB-";
+            }
+            if(doc.data().bloodGroup == 9){
+              var blood = "RARE_TYPE";
+            }
 
-  <!-- Bootstrap core JavaScript -->
-  <script src="vendor/jquery/jquery.min.js"></script>
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+          var tablaHospital = createTable(doc.data().orgName,doc.data().orgAddress,blood,doc.data().units,doc.data().timestampCreated);
+          console.log("SE ESTA REPITIENDO");
+          innerHTML("loadtask", tablaHospital);
+          }else{
+            console.log("No son compatibles los UID");
+          }
 
-  <!-- Plugin JavaScript -->
-  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-  <!-- Custom scripts for this template -->
-  <script src="js/new-age.min.js"></script>
-
-</body>
-
-</html>
+        });
+      });
+    }
+  
+    // esta es la funcion para desloguearse del sistema 
+  function logout(){
+    firebase.auth().signOut();
+    location.reload();
+  }
+  

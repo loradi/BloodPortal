@@ -20,7 +20,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 
     if (user) {
       // User is signed in.
-      console.log("ACA  SE REVISA EL BOOL"+bool_hospital);
+      //console.log("ACA  SE REVISA EL BOOL"+bool_hospital);
       if(bool_hospital == "1"){
         //console.log("7");
       document.getElementById("user_div").style.display = "block";
@@ -54,7 +54,7 @@ firebase.auth().onAuthStateChanged(function(user) {
   
     } else {
       // No user is signed in.
-      console.log("ESTE ES EL DATO "+ bool);
+      //console.log("ESTE ES EL DATO "+ bool);
 
       document.getElementById("card_form").style.display = "none";
       document.getElementById("user_div").style.display = "none";
@@ -178,11 +178,13 @@ function arrayHospital(uid, address_hospital,name_hospital,postalcode_hospital,c
           hospitalID: uid,
           bloodGroup: blood,
           units: unidades,
-          timestampCreated: str
+          timestampCreated: date
         });
         //request_unities.set(arrayData);
         alert("The Request was successfull!!");
         cleanForm("unitis","");
+        //setTimeout(refresh(),1500);
+        var myVar = setInterval(refresh, 1000);
         
 
       }
@@ -208,11 +210,11 @@ function arrayHospital(uid, address_hospital,name_hospital,postalcode_hospital,c
         if (bloodBank_hospital.length > 2){
           
           bloodBank_hospital = true;
-          console.log(bloodBank_hospital);
+          //console.log(bloodBank_hospital);
         }else{
           
           bloodBank_hospital = false;
-          console.log(bloodBank_hospital);
+          //console.log(bloodBank_hospital);
         }
         var regex = /^[A-Z]\d[A-Z][ -]?\d[A-Z]\d$/;
         var match = regex.exec(postalCode_hospital);
@@ -238,6 +240,7 @@ function arrayHospital(uid, address_hospital,name_hospital,postalcode_hospital,c
       cleanForm("personname_hospital","");
       cleanForm("postalcode_hospital","");
       cleanForm("contactEmail_hospital","");
+      var secondvar = setInterval(refresh, 1000);
     }else{
       alert("the Postal Code doesnt have the right format ");
     }
@@ -249,12 +252,16 @@ function arrayHospital(uid, address_hospital,name_hospital,postalcode_hospital,c
     }
 //Function to validate if the Hospital exist or not 
     function validateHospital(){
-      //console.log("1");
+      console.log("1");
+      var count = 0;
       db.collection('HOSPITAL_DB/').get().then((snapshot) =>{
+        console.log("2");
         snapshot.docs.forEach(doc => {
-          console.log("ESTOS SON LOS DATOS "+ doc.data().uid);
+          count++;
+          console.log("3"+count);
+          console.log("ESTOS SON LOS DATOS "+ doc.data().uid+"_____"+count);
           if(doc.data().uid == uid){
-            console.log("7");
+            console.log("4"+count);
             contactNumber_hospital = doc.data().contactEmail;
             contactEmail_hospital = doc.data().contactNumber;
             name_hospital = doc.data().name;
@@ -263,12 +270,15 @@ function arrayHospital(uid, address_hospital,name_hospital,postalcode_hospital,c
             personName_hospital = doc.data().personName;
             
           document.getElementById("user_div").style.display = "block";
-          console.log("8");
+          //console.log("8");
           document.getElementById("user_div2").style.display = "none";
           populateTable();
           }
+          console.log("5");
         });
+        console.log("6"); 
       });
+      console.log("7");
 
     }
 
@@ -291,7 +301,7 @@ function innerHTML(id,result){
     function populateTable(){
       db.collection('REQUEST_DB/').get().then((snapshot) =>{
         snapshot.docs.forEach(doc =>{
-          console.log("ESTOS SON LOS DATOS DE LA TABLA"+doc.data().bloodGroup);
+          //console.log("ESTOS SON LOS DATOS DE LA TABLA"+doc.length);
           if(doc.data().hospitalID == uid){
             if(doc.data().bloodGroup == 1){
               var blood = "A+";
@@ -321,14 +331,46 @@ function innerHTML(id,result){
               var blood = "RARE_TYPE";
             }
 
-          var tablaHospital = createTable(doc.data().orgName,doc.data().orgAddress,blood,doc.data().units,doc.data().timestampCreated);
+            var dates =  new Date(doc.data().timestampCreated);
+            
+            var utc = dates.getTime() + (dates.getTimezoneOffset() * 60000);  //This converts to UTC 00:00
+            var nd = new Date(utc + (3600000*dates));
+
+            var month = dates.getMonth() + 1;
+            var day = dates.getDate();
+            var hour = dates.getHours();
+            var min = dates.getMinutes();
+            var sec = dates.getSeconds();
+        
+            month = (month < 10 ? "0" : "") + month;
+            day = (day < 10 ? "0" : "") + day;
+            hour = (hour < 10 ? "0" : "") + hour;
+            min = (min < 10 ? "0" : "") + min;
+            sec = (sec < 10 ? "0" : "") + sec;
+        
+            var str = dates.getFullYear() + "-" + month + "-" + day + " " +  hour + ":" + min + ":" + sec;
+            console.log(doc.data().timestampCreated+"///"+nd.toLocaleString());
+
+          var tablaHospital = createTable(doc.data().orgName,doc.data().orgAddress,blood,doc.data().units);
+          //console.log("SE ESTA REPITIENDO");
           innerHTML("loadtask", tablaHospital);
           }else{
-            console.log("No son compatibles los UID");
+            // console.log("No son compatibles los UID");
           }
 
         });
       });
+    }
+
+    function convertEpochToSpecificTimezone(offset){
+      var d = new Date(1495159447834);
+      var utc = d.getTime() + (d.getTimezoneOffset() * 60000);  //This converts to UTC 00:00
+      var nd = new Date(utc + (3600000*offset));
+      return nd.toLocaleString();
+  }
+
+    function refresh(){
+      location.reload();
     }
   
     // esta es la funcion para desloguearse del sistema 
