@@ -83,6 +83,7 @@ firebase.auth().onAuthStateChanged(function(user) {
   
       // ...
     });
+    var myVar = setInterval(refresh, 1000);
   
   }
   // esta es la funcion para traer el elemento por id 
