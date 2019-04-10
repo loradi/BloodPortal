@@ -360,7 +360,7 @@ function innerHTML(id,result){
             var str = dates.getFullYear() + "-" + month + "-" + day + " " +  hour + ":" + min + ":" + sec;
             console.log(doc.data().timestampCreated+"///"+nd.toLocaleString());
 
-          var tablaHospital = createTable(doc.data().orgName,doc.data().orgAddress,blood,doc.data().nd);
+          var tablaHospital = createTable(doc.data().orgName,doc.data().orgAddress,blood,doc.data().units);
           //console.log("SE ESTA REPITIENDO");
           innerHTML("loadtask", tablaHospital);
           }else{
