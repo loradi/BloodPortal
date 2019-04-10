@@ -172,8 +172,7 @@ function arrayHospital(uid, address_hospital,name_hospital,postalcode_hospital,c
         if(tipo_sangre == "RARE_TYPE"){
           var blood = 9;
         } 
- 
-        var random = "";
+        var random ="";
           
         var unities = parseInt(unidades);
         var request_unities = db.collection("REQUEST_DB/").add({
@@ -357,10 +356,22 @@ function innerHTML(id,result){
             hour = (hour < 10 ? "0" : "") + hour;
             min = (min < 10 ? "0" : "") + min;
             sec = (sec < 10 ? "0" : "") + sec;
+            var objsize = "";
+            try {
+              objsize += doc.data().responds.user_0+" : ";
+  
+            } catch (error) {
+              objsize = "Not Yet";
+   console.log("Entro al error1");
+            }
+            try {
+              objsize += doc.data().responds.user_1+" : ";
+  
+            } catch (error) {
+              objsize +=" : ";
+   console.log("Entro al error2");
+            }
 
-
-
-          var objsize = doc.data().responds.user_0+"/"+doc.data().responds.user_1;
         
             var str = dates.getFullYear() + "-" + month + "-" + day + " " +  hour + ":" + min + ":" + sec;
             console.log(doc.data().timestampCreated+"///"+doc.data().units+"//////"+objsize);
