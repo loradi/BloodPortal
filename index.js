@@ -10,6 +10,8 @@ var units_hospital;
 var contactEmail_hospital;
 var BloodBank_hospital;
 var fechadesolicitud;
+var email_id ;
+var responds = [];
 const db = firebase.firestore();
 
 
@@ -46,7 +48,7 @@ firebase.auth().onAuthStateChanged(function(user) {
   
       if(user != null){
   
-        var email_id = user.email;
+        email_id = user.email;
         uid = user.uid;
         document.getElementById("user_para").innerHTML = "Welcome User : " + email_id;
   
@@ -137,8 +139,10 @@ function arrayHospital(uid, address_hospital,name_hospital,postalcode_hospital,c
       console.log("LOS DATOS "+ contactEmail_hospital+"/"+address_hospital+"/"+name_hospital+"/"+postalCode_hospital+"/"+personName_hospital+"/"+contactNumber_hospital+"/"+uid);
   
       //alert(str);
-      if (unidades == 0 ){
-        alert("You need to select at least one unit to send the request");
+      if (unidades <= 0 || unidades > 40){
+
+        alert("You need to select units betwwen the range 1 - 40");
+        
       }else{
         var date = new Date();
         if(tipo_sangre == "A+"){
@@ -167,8 +171,13 @@ function arrayHospital(uid, address_hospital,name_hospital,postalcode_hospital,c
         }
         if(tipo_sangre == "RARE_TYPE"){
           var blood = 9;
-        }
+        } 
 
+        var min=1111111111; 
+        var max=9999999999;  
+        var random =Math.floor(Math.random() * (+max - +min)) + +min;
+          
+        var unities = parseInt(unidades);
         var request_unities = db.collection("REQUEST_DB/").add({
           orgName: name_hospital,
           orgAddress: address_hospital,
@@ -178,8 +187,9 @@ function arrayHospital(uid, address_hospital,name_hospital,postalcode_hospital,c
           contactEmail: contactEmail_hospital,
           hospitalID: uid,
           bloodGroup: blood,
-          units: unidades,
-          timestampCreated: date
+          units: unities,
+          timestampCreated: date,
+          requestID: random
         });
         //request_unities.set(arrayData);
         alert("The Request was successfull!!");
@@ -200,7 +210,6 @@ function arrayHospital(uid, address_hospital,name_hospital,postalcode_hospital,c
       postalCode_hospital = getID("postalcode_hospital");
       personName_hospital = getID("personname_hospital");
       contactNumber_hospital = getID("contact_hospital");
-      contactEmail_hospital = getID("contactEmail_hospital");
       bloodBank_hospital  = getID("bloodBank_hospital");
       
 
@@ -230,7 +239,7 @@ function arrayHospital(uid, address_hospital,name_hospital,postalcode_hospital,c
         postalCode: postalCode_hospital,
         personName: personName_hospital,
         contactNumber: contactNumber_hospital,
-        contactEmail: contactEmail_hospital,
+        contactEmail: email_id,
         isBloodBank: bloodBank_hospital
       });
       //Hospital_insert.set(arrayData);
@@ -240,7 +249,6 @@ function arrayHospital(uid, address_hospital,name_hospital,postalcode_hospital,c
       cleanForm("name_hospital","");
       cleanForm("personname_hospital","");
       cleanForm("postalcode_hospital","");
-      cleanForm("contactEmail_hospital","");
       var secondvar = setInterval(refresh, 1000);
     }else{
       alert("the Postal Code doesnt have the right format ");
@@ -263,8 +271,8 @@ function arrayHospital(uid, address_hospital,name_hospital,postalcode_hospital,c
           console.log("ESTOS SON LOS DATOS "+ doc.data().uid+"_____"+count);
           if(doc.data().uid == uid){
             console.log("4"+count);
-            contactNumber_hospital = doc.data().contactEmail;
-            contactEmail_hospital = doc.data().contactNumber;
+            contactNumber_hospital = doc.data().contactNumber;
+            contactEmail_hospital = doc.data().contactEmail;
             name_hospital = doc.data().name;
             address_hospital = doc.data().address;
             postalCode_hospital = doc.data().postalCode;
@@ -352,7 +360,7 @@ function innerHTML(id,result){
             var str = dates.getFullYear() + "-" + month + "-" + day + " " +  hour + ":" + min + ":" + sec;
             console.log(doc.data().timestampCreated+"///"+nd.toLocaleString());
 
-          var tablaHospital = createTable(doc.data().orgName,doc.data().orgAddress,blood,doc.data().units);
+          var tablaHospital = createTable(doc.data().orgName,doc.data().orgAddress,blood,doc.data().nd);
           //console.log("SE ESTA REPITIENDO");
           innerHTML("loadtask", tablaHospital);
           }else{

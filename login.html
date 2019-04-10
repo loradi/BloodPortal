@@ -139,7 +139,7 @@
                   <div class="col-lg-6" id="user_div" >
                         <div id="user_div" class="card-title"><h5 style="color: black"></h5></div>
                         <div class="form-group"> <h5 style="color: black ">Select Units of Blood</h5></div>
-                        <div ><input type="number" id="unitis" class="form-control" placeholder="Insert Units"></input></div>
+                        <div ><input type="number" id="unitis" class="form-control" maxlength="2" min="1" max="40" placeholder="Insert Units"></input></div>
                         <div class="form-group"></div>
                         <div class="form-group"> <h5 style="color: black">Type Blood</h5></div>
                         <div >                                   
@@ -170,8 +170,6 @@
                       <div class="form-group"><input type="number" id="contact_hospital" class="form-control" placeholder="Insert Hospital Person Contact" required></input></div>
                       <div class="form-group"> <h5 style="color: black">Person Name</h5><p id="alert_personname" style="color: brown"></p></div>
                       <div class="form-group"><input type="text" id="personname_hospital" class="form-control" placeholder="Insert Hospital Person Name" required></input></div>
-                      <div class="form-group"> <h5 style="color: black">Email</h5><p id="alert_email" style="color: brown"></p></div>
-                      <div class="form-group"><input type="email" id="contactEmail_hospital" class="form-control" placeholder="Insert Hospital Email Contact" required></input></div>
                       <div class="form-group"> <h5 style="color: black">Its a Blood Bank ? </h5><p id="alert_units" style="color: brown"></p></div>
                       <div class="form-group">                                    
                         <select class="form-control" id="bloodBank_hospital" required>
@@ -211,7 +209,7 @@
                           <th>Address</th>
                           <th>Blood Group</th>
                           <th>Units</th>
-                          <th>Request Date</th>
+                          <th>Accepted People</th>
                         </tr>
                       </thead>
                       <tbody id="loadtask"></tbody>
