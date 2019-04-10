@@ -172,10 +172,8 @@ function arrayHospital(uid, address_hospital,name_hospital,postalcode_hospital,c
         if(tipo_sangre == "RARE_TYPE"){
           var blood = 9;
         } 
-
-        var min=1111111111; 
-        var max=9999999999;  
-        var random =Math.floor(Math.random() * (+max - +min)) + +min;
+ 
+        var random = "";
           
         var unities = parseInt(unidades);
         var request_unities = db.collection("REQUEST_DB/").add({
