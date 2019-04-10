@@ -310,7 +310,7 @@ function innerHTML(id,result){
     function populateTable(){
       db.collection('REQUEST_DB/').get().then((snapshot) =>{
         snapshot.docs.forEach(doc =>{
-          //console.log("ESTOS SON LOS DATOS DE LA TABLA"+doc.length);
+          console.log("ESTOS SON LOS DATOS DE LA TABLA"+doc.data().units);
           if(doc.data().hospitalID == uid){
             if(doc.data().bloodGroup == 1){
               var blood = "A+";
@@ -340,6 +340,7 @@ function innerHTML(id,result){
               var blood = "RARE_TYPE";
             }
 
+
             var dates =  new Date(doc.data().timestampCreated);
             
             var utc = dates.getTime() + (dates.getTimezoneOffset() * 60000);  //This converts to UTC 00:00
@@ -350,17 +351,23 @@ function innerHTML(id,result){
             var hour = dates.getHours();
             var min = dates.getMinutes();
             var sec = dates.getSeconds();
+
+            
         
             month = (month < 10 ? "0" : "") + month;
             day = (day < 10 ? "0" : "") + day;
             hour = (hour < 10 ? "0" : "") + hour;
             min = (min < 10 ? "0" : "") + min;
             sec = (sec < 10 ? "0" : "") + sec;
+
+
+
+          var objsize = doc.data().responds.user_0+"/"+doc.data().responds.user_1;
         
             var str = dates.getFullYear() + "-" + month + "-" + day + " " +  hour + ":" + min + ":" + sec;
-            console.log(doc.data().timestampCreated+"///"+nd.toLocaleString());
+            console.log(doc.data().timestampCreated+"///"+doc.data().units+"//////"+objsize);
 
-          var tablaHospital = createTable(doc.data().orgName,doc.data().orgAddress,blood,doc.data().units);
+          var tablaHospital = createTable(doc.data().orgName,doc.data().orgAddress,blood,doc.data().units,objsize);
           //console.log("SE ESTA REPITIENDO");
           innerHTML("loadtask", tablaHospital);
           }else{
